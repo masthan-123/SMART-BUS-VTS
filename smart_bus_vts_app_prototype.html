@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SmartBus VTS</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef2f6;color:#172033}
+.app{max-width:430px;margin:auto;min-height:100vh;background:#f7f9fc;box-shadow:0 0 25px #cfd5dd}
+header{background:#123b70;color:white;padding:18px 18px 20px;position:sticky;top:0;z-index:5}
+.top{display:flex;justify-content:space-between;align-items:center}.brand{font-size:22px;font-weight:800}.menu{font-size:24px}
+.search{margin-top:16px;background:white;border-radius:10px;padding:12px;color:#7b8491}
+.hero{margin:16px;background:white;border-radius:15px;padding:16px;box-shadow:0 3px 12px #dce1e8}
+.hero h2{margin:0 0 5px}.hero p{margin:0;color:#667085;font-size:14px}
+.section{padding:0 16px 14px}.section h3{font-size:17px;margin:8px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.option{background:white;border-radius:12px;padding:12px 5px;text-align:center;box-shadow:0 2px 8px #e1e5ea;font-size:11px;font-weight:700}.ico{font-size:23px;display:block;margin-bottom:5px}
+.card{background:white;border-radius:14px;padding:15px;margin-bottom:12px;box-shadow:0 2px 10px #dfe4ea}
+.busrow{display:flex;justify-content:space-between;align-items:center}.busname{font-weight:800}.tag{background:#e5f6ed;color:#087443;padding:5px 8px;border-radius:15px;font-size:11px;font-weight:700}
+.small{font-size:12px;color:#667085}.eta{font-size:19px;font-weight:800;margin-top:8px}
+.map{height:190px;background:#e7edf2;border-radius:12px;position:relative;overflow:hidden;margin-top:10px}
+.road{position:absolute;background:#fff;border:5px solid #cbd3dc;border-radius:30px}
+.r1{width:125%;height:45px;left:-12%;top:78px;transform:rotate(-8deg)}.r2{height:130%;width:40px;left:205px;top:-15%;transform:rotate(23deg)}
+.stop{position:absolute;width:13px;height:13px;border-radius:50%;background:#123b70;border:3px solid white;box-shadow:0 0 0 2px #123b70}
+.s1{left:17%;top:62%}.s2{left:47%;top:50%}.s3{left:78%;top:38%}
+.bus{position:absolute;left:54%;top:43%;background:#123b70;color:white;padding:6px 8px;border-radius:7px;font-size:11px}
+.tabs{position:fixed;bottom:0;max-width:430px;width:100%;background:white;border-top:1px solid #ddd;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 0;z-index:10}
+.tab{text-align:center;font-size:10px;color:#657080}.tab b{display:block;font-size:19px;color:#123b70;margin-bottom:2px}
+.content{padding-bottom:80px}
+.notice{background:#fff7df;border-left:4px solid #e4a900;padding:11px;border-radius:8px;font-size:12px}
+.page{display:none}.page.active{display:block}
+button{border:0;font:inherit;background:none}
+.route{display:flex;align-items:center;gap:8px;margin:12px 0}.line{height:3px;background:#123b70;flex:1}.dot{width:12px;height:12px;border:3px solid #123b70;border-radius:50%;background:white}
+.detail{display:flex;justify-content:space-between;border-bottom:1px solid #edf0f3;padding:9px 0;font-size:13px}.detail:last-child{border:0}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="top"><div class="brand">🚌 SmartBus VTS</div><div class="menu">⋮</div></div>
+  <div class="search">🔎 Search bus number, route or stop</div>
+</header>
+
+<div class="content">
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="hero"><h2>Track Your Bus</h2><p>Find the current bus location and estimated arrival time.</p></div>
+
+  <div class="section">
+    <h3>Quick Services</h3>
+    <div class="grid">
+      <button class="option" onclick="show('track')"><span class="ico">📍</span>Track Bus</button>
+      <button class="option" onclick="show('routes')"><span class="ico">🗺️</span>Routes</button>
+      <button class="option" onclick="show('stops')"><span class="ico">🚏</span>Nearby Stops</button>
+      <button class="option" onclick="show('alerts')"><span class="ico">🔔</span>Alerts</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Popular Buses</h3>
+    <div class="card">
+      <div class="busrow"><div class="busname">Bus 05 – College Route</div><span class="tag">ON ROUTE</span></div>
+      <div class="small">College → Stop 1 → Stop 2 → Final Stop</div>
+      <div class="eta">Arriving in 5 min</div>
+    </div>
+    <div class="card">
+      <div class="busrow"><div class="busname">Bus 12 – Town Route</div><span class="tag">ON ROUTE</span></div>
+      <div class="small">Town → Main Road → College</div>
+      <div class="eta">Arriving in 12 min</div>
+    </div>
+  </div>
+
+  <div class="section"><div class="notice">💡 Prototype: arrival and location values are sample data for academic demonstration.</div></div>
+</div>
+
+<!-- TRACK -->
+<div id="track" class="page">
+  <div class="section" style="padding-top:18px">
+    <h3>Live Bus Tracking</h3>
+    <div class="card">
+      <div class="busrow"><div><div class="busname">🚌 Bus 05</div><div class="small">College Route</div></div><span class="tag">MOVING</span></div>
+      <div class="map"><div class="road r1"></div><div class="road r2"></div><div class="stop s1"></div><div class="stop s2"></div><div class="stop s3"></div><div class="bus">Bus 05</div></div>
+      <div class="detail"><span>Current Stop</span><b>Stop 1</b></div>
+      <div class="detail"><span>Next Stop</span><b>Stop 2</b></div>
+      <div class="detail"><span>Estimated Arrival</span><b>5 minutes</b></div>
+    </div>
+  </div>
+</div>
+
+<!-- ROUTES -->
+<div id="routes" class="page">
+ <div class="section" style="padding-top:18px"><h3>Bus Routes</h3>
+  <div class="card"><div class="busname">Route 05 – College Route</div><div class="route"><span>College</span><div class="line"></div><span>Stop 1</span><div class="line"></div><span>Final</span></div><div class="small">Bus 05 • Frequency: 15 min</div></div>
+  <div class="card"><div class="busname">Route 12 – Town Route</div><div class="route"><span>Town</span><div class="line"></div><span>Main Rd</span><div class="line"></div><span>College</span></div><div class="small">Bus 12 • Frequency: 20 min</div></div>
+ </div>
+</div>
+
+<!-- STOPS -->
+<div id="stops" class="page">
+ <div class="section" style="padding-top:18px"><h3>Nearby Bus Stops</h3>
+  <div class="card"><div class="busrow"><div><b>College Main Gate</b><div class="small">Bus 05, Bus 12</div></div><span class="tag">0.3 km</span></div></div>
+  <div class="card"><div class="busrow"><div><b>Stop 1</b><div class="small">Bus 05</div></div><span class="tag">0.8 km</span></div></div>
+  <div class="card"><div class="busrow"><div><b>Main Road Stop</b><div class="small">Bus 12</div></div><span class="tag">1.1 km</span></div></div>
+ </div>
+</div>
+
+<!-- ALERTS -->
+<div id="alerts" class="page">
+ <div class="section" style="padding-top:18px"><h3>Travel Alerts</h3>
+  <div class="card"><b>🟢 Bus 05</b><p class="small">Running normally. Expected at Stop 2 in 5 minutes.</p></div>
+  <div class="card"><b>🟡 Route 12</b><p class="small">Moderate traffic near Main Road. ETA may increase by a few minutes.</p></div>
+ </div>
+</div>
+
+<!-- MORE -->
+<div id="more" class="page">
+ <div class="section" style="padding-top:18px"><h3>More Options</h3>
+  <div class="card"><div class="detail"><span>⭐ Favorite Routes</span><b>›</b></div><div class="detail"><span>🕘 Trip History</span><b>›</b></div><div class="detail"><span>⚙️ Settings</span><b>›</b></div><div class="detail"><span>ℹ️ About Project</span><b>›</b></div></div>
+ </div>
+</div>
+
+</div>
+
+<div class="tabs">
+ <button class="tab" onclick="show('home')"><b>⌂</b>Home</button>
+ <button class="tab" onclick="show('track')"><b>📍</b>Track</button>
+ <button class="tab" onclick="show('routes')"><b>🗺</b>Routes</button>
+ <button class="tab" onclick="show('alerts')"><b>🔔</b>Alerts</button>
+ <button class="tab" onclick="show('more')"><b>☰</b>More</button>
+</div>
+</div>
+
+<script>
+function show(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
